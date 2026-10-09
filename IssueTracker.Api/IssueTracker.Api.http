@@ -4,4 +4,26 @@
 GET {{IssueTracker.Api_HostAddress}}/tickets
 Accept: application/json
 
+### Skapa supportärende
+POST {{IssueTracker.Api_HostAddress}}/api/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Plocka en order",
+  "description": "Användaren får ogiltig status",
+  "priority": "High"
+}
+
+### Validera flera fel vid skapande
+POST {{IssueTracker.Api_HostAddress}}/api/tickets
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Kort",
+  "description": "Kort",
+  "priority": "Urgent"
+}
+
 ###

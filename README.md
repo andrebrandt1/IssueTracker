@@ -44,12 +44,48 @@ Svaret är `200 OK` med en JSON-lista, sorterad efter `id`:
 
 En tom tabell ger `200 OK` med `[]`.
 
+## Skapa supportärende
+
+Anropa `POST https://localhost:8000/api/tickets` med `Content-Type: application/json`:
+
+```json
+{
+  "title": "Kan inte logga in",
+  "description": "Användaren kan inte logga in i systemet.",
+  "priority": "High"
+}
+```
+
+Titel måste vara 5–100 tecken och beskrivning 10–1000 tecken. Båda är obligatoriska
+och får inte enbart innehålla blanksteg. Prioritet är obligatorisk och måste vara
+exakt `Low`, `Normal` eller `High`. Fält som `id` och `status` får inte skickas;
+okända JSON-fält ger `400 Bad Request`.
+
+Ett giltigt anrop ger `201 Created` med ärendets databasgenererade ID, titel,
+beskrivning, status `Open` och angiven engelsk prioritet. Valideringsfel ger
+`400 Bad Request` med en `errors`-samling som kan innehålla fel för flera fält.
+
+Databasen behåller svenska värden: `Low` → `Låg`, `Normal` → `Normal`,
+`High` → `Hög` och nya ärendens status lagras som `Öppet`. Det befintliga
+`GET /tickets` returnerar fortsatt databasens svenska status- och prioritetsvärden.
+
+## Implementation och tester
+
 `Ticket` beskriver databasmodellen. `TicketService.GetTickets()` öppnar en SQL
 Server-anslutning med `Microsoft.Data.SqlClient` och hämtar ärenden asynkront med
 Dappers `QueryAsync<Ticket>()`. SQL-frågan väljer de fem kolumnerna från
 `dbo.Tickets` och sorterar efter `Id`. Modellerna mappas sedan till `TicketDto`.
 `TicketsController` returnerar DTO-listan via HTTP.
 API:et skapar eller ändrar inte databasens schema.
+
+Databastesterna körs uttryckligen och använder anslutningen i User Secrets (eller
+`ConnectionStrings__IssueTracker`). De kontrollerar ID-generering och svenska
+lagringsvärden med riktiga SQL Server-inserts. Testärendena rullas tillbaka;
+SQL Servers IDENTITY-räknare kan ändå öka.
+
+```powershell
+dotnet test --solution IssueTracker.slnx --configuration Release --explicit only --filter-class IssueTracker.Api.Tests.TicketServiceDatabaseTests
+```
 
 Utanför Development behöver anslutningssträngen konfigureras, exempelvis via
 miljövariabeln `ConnectionStrings__IssueTracker`. Använd serverns giltiga certifikat
