@@ -5,4 +5,5 @@ namespace IssueTracker.Api.Services;
 public interface ITicketService
 {
     Task<IReadOnlyList<TicketDto>> GetTickets(CancellationToken cancellationToken = default);
+    Task<TicketDto> CreateTicket(CreateTicketDto ticket, CancellationToken cancellationToken = default);
 }

@@ -30,3 +30,7 @@
 -- Tabellen har inga främmande nycklar.
 -- TicketService.GetTickets() läser tabellen via Dapper och mappar till TicketDto.
 -- GET /tickets returnerar DTO-listan sorterad efter Id.
+-- POST /api/tickets skapar ett ärende via Dapper. Id genereras av SQL Server.
+-- API-validering: Title 5–100 tecken, Description 10–1000 tecken, inga rena blanksteg.
+-- POST använder Low/Normal/High, som lagras som Låg/Normal/Hög i databasen.
+-- Nya ärenden lagras med Status Öppet och returneras med Status Open i POST-svaret.
