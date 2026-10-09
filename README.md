@@ -17,7 +17,7 @@ dotnet user-secrets set "ConnectionStrings:IssueTracker" "Server=.\SQLEXPRESS;Da
 Projektet har redan ett `UserSecretsId`. User Secrets lagras utanför projektet och
 laddas automatiskt när API:et körs i Development. Varje utvecklare behöver spara
 sin egen anslutningssträng. Byt servernamnet i kommandot om du använder en annan server.
-Kontot som kör API:et behöver läsrättigheter till `IssueTracker.dbo.Tickets`.
+Kontot som kör API:et behöver `SELECT`, `INSERT` och `DELETE` på `IssueTracker.dbo.Tickets`.
 `TrustServerCertificate=True` används för den lokala utvecklingsservern.
 
 I Visual Studio kan du redigera värdet genom att högerklicka på `IssueTracker.Api`
@@ -68,6 +68,16 @@ beskrivning, status `Open` och angiven engelsk prioritet. Valideringsfel ger
 Databasen behåller svenska värden: `Low` → `Låg`, `Normal` → `Normal`,
 `High` → `Hög` och nya ärendens status lagras som `Öppet`. Det befintliga
 `GET /tickets` returnerar fortsatt databasens svenska status- och prioritetsvärden.
+
+## Radera supportärende
+
+Anropa `DELETE https://localhost:8000/api/tickets/{id}` med ärendets ID.
+Anropet behöver ingen body. Ett raderat ärende ger `204 No Content` med tomt svar.
+Om ID:t inte finns ger anropet `404 Not Found`, även vid ett upprepat anrop
+för ett redan raderat ärende.
+
+`TicketService.DeleteTicket()` kör en parametriserad `DELETE` med Dappers
+`ExecuteAsync()`. Antalet raderade rader avgör om ärendet fanns.
 
 ## Implementation och tester
 

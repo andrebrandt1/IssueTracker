@@ -7,6 +7,21 @@ namespace IssueTracker.Api.Services;
 
 public sealed class TicketService(string connectionString) : ITicketService
 {
+    public async Task<bool> DeleteTicket(int id, CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            DELETE FROM [dbo].[Tickets]
+            WHERE [Id] = @Id;
+            """;
+
+        await using var connection = new SqlConnection(connectionString);
+        await connection.OpenAsync(cancellationToken);
+
+        var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken);
+        var affectedRows = await connection.ExecuteAsync(command);
+        return affectedRows > 0;
+    }
+
     public async Task<TicketDto> CreateTicket(CreateTicketDto ticket, CancellationToken cancellationToken = default)
     {
         var databasePriority = ticket.Priority switch

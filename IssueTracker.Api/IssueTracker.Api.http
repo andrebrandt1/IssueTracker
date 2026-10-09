@@ -1,4 +1,5 @@
 @IssueTracker.Api_HostAddress = https://localhost:8000
+@TicketId = 1
 
 ### Hämta alla supportärenden
 GET {{IssueTracker.Api_HostAddress}}/tickets
@@ -25,5 +26,10 @@ Accept: application/json
   "description": "Kort",
   "priority": "Urgent"
 }
+
+### Radera supportärende
+# Ange ärendets ID i TicketId ovan. ID 0 ger 404 Not Found.
+DELETE {{IssueTracker.Api_HostAddress}}/api/tickets/{{TicketId}}
+Accept: application/json
 
 ###

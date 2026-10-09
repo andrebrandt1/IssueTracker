@@ -34,3 +34,4 @@
 -- API-validering: Title 5–100 tecken, Description 10–1000 tecken, inga rena blanksteg.
 -- POST använder Low/Normal/High, som lagras som Låg/Normal/Hög i databasen.
 -- Nya ärenden lagras med Status Öppet och returneras med Status Open i POST-svaret.
+-- DELETE /api/tickets/{id} raderar ärendet via Dapper: 204 om det raderas, annars 404.
